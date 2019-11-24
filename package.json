@@ -5,13 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "lint": "eslint --quiet .",
-    "fix": "eslint --fix .",
+    "lint": "eslint --quiet .; exit 0",
+    "fix": "eslint --fix .; exit 0",
     "test": "npm run lint && cross-env NODE_ENV=test mocha -u tdd --reporter spec --exit"
   },
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.0.0",
+    "bcrypt": "^3.0.7",
     "express": "^4.17.0",
     "express-handlebars": "^3.1.0",
     "mysql2": "^1.6.5",
