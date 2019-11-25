@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const exphbs = require("express-handlebars");
-const passport = require("passport");
 
 const db = require("./models");
 
@@ -17,14 +16,11 @@ app.use(express.static("public"));
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-// Passport
-app.use(passport.initialize());
-app.use(passport.session());
-require("./config/passport")(passport);
-
 // Routes
-const routes = require("./controller/user-controller")(passport);
-app.use(routes);
+const authRoutes = require("./controller/auth-controller");
+const userRoutes = require("./controller/user-controller");
+app.use(authRoutes);
+app.use(userRoutes);
 
 const syncOptions = { force: false };
 
