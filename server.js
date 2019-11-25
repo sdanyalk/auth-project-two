@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const exphbs = require("express-handlebars");
+const passport = require("passport");
 
 const db = require("./models");
 
@@ -16,9 +17,14 @@ app.use(express.static("public"));
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+require("./config/passport")(passport);
+
 // Routes
-require("./routes/api-routes")(app);
-require("./routes/html-routes")(app);
+const routes = require("./controller/user-controller")(passport);
+app.use(routes);
 
 const syncOptions = { force: false };
 
@@ -36,5 +42,3 @@ db.sequelize.sync(syncOptions).then(function() {
     );
   });
 });
-
-module.exports = app;

@@ -13,17 +13,17 @@ module.exports = function(sequelize, DataTypes) {
     },
     {
       underscored: true,
-      freezeTableName: true,
-      instanceMethods: {
-        generateHash(password) {
-          return bcrypt.hash(password, bcrypt.genSaltSync(8));
-        },
-        validPassword(password) {
-          return bcrypt.compare(password, this.password);
-        }
-      }
+      freezeTableName: true
     }
   );
+
+  User.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+  };
+
+  User.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+  };
 
   return User;
 };
