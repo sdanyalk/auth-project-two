@@ -23,6 +23,22 @@ Passport Local strategy expects you to have username and password stored in your
     ```
     npm install
     ```
+1. Create mysql database using the `schema.sql` file, located below.
+    ```
+    /models/schema.sql
+    ```
+1. Update database username and password configuration in `config.json` file, located below.
+    ```
+    /config/config.json
+    ```
+1. In the root directory of the project, start the server.
+    ```
+    node server.js
+    ```
+1. In your browser navigate to the following page.
+    ```
+    http://localhost:3000
+    ```
 ---
 
 ## NPM Packages
