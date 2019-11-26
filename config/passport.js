@@ -7,11 +7,8 @@ module.exports = function(passport) {
   });
 
   passport.deserializeUser(function(id, cb) {
-    db.user.findOne(id, function(err, user) {
-      if (err) {
-        return cb(err);
-      }
-      cb(null, user);
+    db.user.findOne({ where: { id: id } }).then(function(data) {
+      cb(null, data);
     });
   });
 
@@ -20,18 +17,25 @@ module.exports = function(passport) {
     new LocalStrategy(
       {
         usernameField: "email",
-        passwordField: "password",
-        passReqToCallback: true
+        passwordField: "password"
       },
-      function(req, email, password, cb) {
-        db.user
-          .create({
-            email: email,
-            password: db.user.generateHash(password)
-          })
-          .then(function(data) {
-            return cb(null, data);
-          });
+      function(email, password, cb) {
+        db.user.findOne({ where: { email: email } }).then(function(data) {
+          if (data) {
+            return cb(null, false, {
+              message: "Oops! Email already signed-up."
+            });
+          } else {
+            db.user
+              .create({
+                email: email,
+                password: db.user.generateHash(password)
+              })
+              .then(function(data) {
+                return cb(null, data);
+              });
+          }
+        });
       }
     )
   );
@@ -41,16 +45,15 @@ module.exports = function(passport) {
     new LocalStrategy(
       {
         usernameField: "email",
-        passwordField: "password",
-        passReqToCallback: true
+        passwordField: "password"
       },
-      function(req, email, password, cb) {
+      function(email, password, cb) {
         db.user.findOne({ where: { email: email } }).then(function(data) {
           if (!data) {
-            return cb(null, false);
+            return cb(null, false, { message: "No email found." });
           }
           if (!db.user.validPassword(password, data.password)) {
-            return cb(null, false);
+            return cb(null, false, { message: "Oops! Wrong password!" });
           }
           return cb(null, data);
         });
