@@ -26,11 +26,9 @@ router.get("/signup", function(req, res) {
 router.post(
   "/signup",
   passport.authenticate("local-signup", {
+    successRedirect: "/",
     failureRedirect: "/signup"
-  }),
-  function(req, res) {
-    res.redirect("/");
-  }
+  })
 );
 
 router.get("/", function(req, res) {

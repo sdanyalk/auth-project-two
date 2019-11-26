@@ -37,21 +37,19 @@ module.exports = function(passport) {
   );
 
   passport.use(
+    "local-login",
     new LocalStrategy(
       {
         usernameField: "email",
         passwordField: "password",
         passReqToCallback: true
       },
-      function(email, password, cb) {
-        db.user.findOne({ where: { email: email } }, function(err, data) {
-          if (err) {
-            return cb(err);
-          }
+      function(req, email, password, cb) {
+        db.user.findOne({ where: { email: email } }).then(function(data) {
           if (!data) {
             return cb(null, false);
           }
-          if (data.password !== password) {
+          if (!db.user.validPassword(password, data.password)) {
             return cb(null, false);
           }
           return cb(null, data);

@@ -21,8 +21,8 @@ module.exports = function(sequelize, DataTypes) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
   };
 
-  User.validPassword = function(password) {
-    return bcrypt.compareSync(password, this.password);
+  User.validPassword = function(inputPwd, dbPwd) {
+    return bcrypt.compareSync(inputPwd, dbPwd);
   };
 
   return User;
