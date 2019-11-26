@@ -11,10 +11,18 @@ Passport Local strategy expects you to have username and password stored in your
 
 ## Installation
 
-- `git clone git@github.com:sdanyalk/auth-project-two.git`
-- `cd auth-project-two`
-- `npm i`
-
+1. Clone this repository.
+    ```
+    git clone https://github.com/sdanyalk/auth-project-two.git
+    ```
+1. Navigate into the cloned directory.
+    ```
+    cd auth-project-two
+    ```
+1. Install Nodejs dependencies.
+    ```
+    npm install
+    ```
 ---
 
 ## NPM Packages
