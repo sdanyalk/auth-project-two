@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.com/sdanyalk/auth-project-two.svg?branch=master)](https://travis-ci.com/sdanyalk/auth-project-two)
 
-# Authentication using Project Two template
-This project showcases how to add authentication using `passport.js` library. Template for this project is starter template for Project Two.
+# Authentication for Project Two
+This project showcases how to add authentication using `passport.js` library. Template for this project is the starter template given for Project Two.
 
 `passport.js` provides many authentication strategies. This project makes use of **local** username and password authentication strategy. More details about this strategy can be found [here](http://www.passportjs.org/packages/passport-local/).
 
