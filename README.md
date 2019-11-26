@@ -37,4 +37,4 @@ Passport Local strategy expects you to have username and password stored in your
 
 This project is deployed on Heroku. The link to web app is:
 
-> [Authentication App]()
+> [Authentication App](https://auth-project-two.herokuapp.com/)
