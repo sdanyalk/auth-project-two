@@ -3,6 +3,7 @@ const express = require("express");
 const flash = require("connect-flash");
 const session = require("express-session");
 const router = express.Router();
+const db = require("../models");
 
 // Flash
 router.use(
@@ -55,12 +56,18 @@ router.post(
 );
 
 router.get("/logout", function(req, res) {
-  req.logout();
-  res.redirect("/");
+  const record = {
+    status: "LogOut",
+    userId: req.user.dataValues.id
+  };
+  db.history.create(record).then(function() {
+    req.logout();
+    res.redirect("/");
+  });
 });
 
-router.get("*", function(req, res) {
-  res.render("404");
-});
+// router.get("*", function(req, res) {
+//   res.render("404");
+// });
 
 module.exports = router;

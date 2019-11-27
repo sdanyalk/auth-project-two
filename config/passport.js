@@ -1,4 +1,7 @@
 const LocalStrategy = require("passport-local").Strategy;
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+const jwtSecret = require("./jwt-config");
 const db = require("../models");
 
 module.exports = function(passport) {
@@ -32,7 +35,13 @@ module.exports = function(passport) {
                 password: db.user.generateHash(password)
               })
               .then(function(data) {
-                return cb(null, data);
+                const record = {
+                  status: "SignUp",
+                  userId: data.dataValues.id
+                };
+                db.history.create(record).then(function() {
+                  return cb(null, data);
+                });
               });
           }
         });
@@ -55,9 +64,38 @@ module.exports = function(passport) {
           if (!db.user.validPassword(password, data.password)) {
             return cb(null, false, { message: "Oops! Wrong password!" });
           }
-          return cb(null, data);
+
+          const record = {
+            status: "LogIn",
+            userId: data.id
+          };
+          db.history.create(record).then(function() {
+            return cb(null, data);
+          });
         });
       }
     )
+  );
+
+  const opts = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("JWT"),
+    secretOrKey: jwtSecret
+  };
+
+  passport.use(
+    "jwt",
+    // eslint-disable-next-line camelcase
+    new JwtStrategy(opts, function(jwt_payload, cb) {
+      console.log(jwt_payload);
+
+      // eslint-disable-next-line camelcase
+      db.user.findOne({ id: jwt_payload.sub }).then(function(data) {
+        if (data) {
+          return cb(null, data);
+        } else {
+          return cb(null, false, { message: "No user found." });
+        }
+      });
+    })
   );
 };

@@ -19,8 +19,10 @@ app.set("view engine", "handlebars");
 // Routes
 const authRoutes = require("./controller/auth-controller");
 const userRoutes = require("./controller/user-controller");
+const historyRoutes = require("./controller/history-controller");
 app.use(authRoutes);
 app.use(userRoutes);
+app.use(historyRoutes);
 
 const syncOptions = { force: false };
 

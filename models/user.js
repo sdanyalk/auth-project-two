@@ -5,10 +5,12 @@ module.exports = function(sequelize, DataTypes) {
     "user",
     {
       email: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
       },
       password: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
+        allowNull: false
       }
     },
     {
@@ -23,6 +25,12 @@ module.exports = function(sequelize, DataTypes) {
 
   User.validPassword = function(inputPwd, dbPwd) {
     return bcrypt.compareSync(inputPwd, dbPwd);
+  };
+
+  User.associate = function(models){
+    User.hasMany(models.history, {
+      onDelete: "cascade"
+    });
   };
 
   return User;
