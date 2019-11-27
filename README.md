@@ -65,6 +65,14 @@ This project is deployed on Heroku. The link to web app is:
 
 ---
 
+## Troubleshooting
+
+| Issue | Resolution
+| ----------- | ----------- |
+| `bcrypt` node package failing to install on Windows 7/10 machines. | From the `bcrypt` documentation, there are extra installations required on Windows OS to make `bcrypt` work. This is listed under the [Dependencies](https://www.npmjs.com/package/bcrypt#dependencies) section. To complete the required Windows dependencies install the tools as mentioned [here](https://github.com/kelektiv/node.bcrypt.js/wiki/Installation-Instructions#microsoft-windows). Complete the previous step in GitBash (run as administrator).|
+
+---
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
