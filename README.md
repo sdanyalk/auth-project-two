@@ -43,7 +43,7 @@ Passport Local strategy expects you to have username and password stored in your
 
 ## NPM Packages
 
-| Package | Description |
+| Package | Documentation |
 | ----------- | ----------- |
 | `express` | [Express](https://www.npmjs.com/package/express) |
 | `express-handlebars` | [Express Handlebars](https://www.npmjs.com/package/express-handlebars) |
@@ -63,6 +63,11 @@ This project is deployed on Heroku. The link to web app is:
 
 [https://auth-project-two.herokuapp.com/](https://auth-project-two.herokuapp.com/)
 
+---
+
+## Nice to have
+
+- Secure the API endpoints by using JWT strategy in passport js.
 ---
 
 ## Troubleshooting
