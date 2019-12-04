@@ -1,6 +1,5 @@
 const LocalStrategy = require("passport-local").Strategy;
 const JwtStrategy = require("passport-jwt").Strategy;
-const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwtSecret = require("./jwt-config");
 const db = require("../models");
 
@@ -20,7 +19,8 @@ module.exports = function(passport) {
     new LocalStrategy(
       {
         usernameField: "email",
-        passwordField: "password"
+        passwordField: "password",
+        session: true
       },
       function(email, password, cb) {
         db.user.findOne({ where: { email: email } }).then(function(data) {
@@ -54,9 +54,15 @@ module.exports = function(passport) {
     new LocalStrategy(
       {
         usernameField: "email",
-        passwordField: "password"
+        passwordField: "password",
+        session: false
       },
       function(email, password, cb) {
+        console.log("Inside passport");
+        console.log(email);
+        console.log(password);
+        console.log(cb);
+
         db.user.findOne({ where: { email: email } }).then(function(data) {
           if (!data) {
             return cb(null, false, { message: "No email found." });
@@ -70,6 +76,8 @@ module.exports = function(passport) {
             userId: data.id
           };
           db.history.create(record).then(function() {
+            console.log(cb);
+
             return cb(null, data);
           });
         });
@@ -78,18 +86,18 @@ module.exports = function(passport) {
   );
 
   const opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme("JWT"),
-    secretOrKey: jwtSecret
+    jwtFromRequest: function(req) {
+      return req.cookies.jwt;
+    },
+    secretOrKey: jwtSecret.secret
   };
 
   passport.use(
     "jwt",
-    // eslint-disable-next-line camelcase
-    new JwtStrategy(opts, function(jwt_payload, cb) {
-      console.log(jwt_payload);
+    new JwtStrategy(opts, function(jwtpayload, cb) {
+      console.log(jwtpayload);
 
-      // eslint-disable-next-line camelcase
-      db.user.findOne({ id: jwt_payload.sub }).then(function(data) {
+      db.user.findOne({ id: jwtpayload.sub }).then(function(data) {
         if (data) {
           return cb(null, data);
         } else {

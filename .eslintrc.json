@@ -10,6 +10,7 @@
         "prettier"
       ],
     "rules": {
+        "no-console": "error",
         "no-duplicate-case":"error",
         "no-empty":"error",
         "no-extra-semi":"error",

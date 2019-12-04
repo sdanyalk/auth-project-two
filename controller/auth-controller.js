@@ -2,8 +2,10 @@ const passport = require("passport");
 const express = require("express");
 const flash = require("connect-flash");
 const session = require("express-session");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const db = require("../models");
+const jwtSecret = require("../config/jwt-config");
 
 // Flash
 router.use(
@@ -36,10 +38,28 @@ router.get("/login", function(req, res) {
 router.post(
   "/login",
   passport.authenticate("local-login", {
-    successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true
-  })
+  }),
+  function(req, res) {
+    const payload = {
+      email: req.user.email,
+      expires: Date.now() + parseInt(60000)
+    };
+
+    console.log(payload);
+
+    req.login(payload, { session: false }, function(error) {
+      if (error) {
+        res.status(400).send({ error });
+      }
+
+      const token = jwt.sign(JSON.stringify(payload), jwtSecret.secret);
+
+      res.cookie("jwt", token, { httpOnly: true, secure: true });
+      res.redirect("/");
+    });
+  }
 );
 
 router.get("/signup", function(req, res) {
