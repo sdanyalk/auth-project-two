@@ -9,6 +9,8 @@ This project showcases how to add authentication using `passport.js` library. Te
 
 Passport Local strategy expects you to have username and password stored in your database. In this project I'm using email address as a username. The passwords are stored as a hash using **bcrypt**.
 
+**Version 2** of this project includes securing the API routes by using passport js **JWT strategy**. More about JWT-passport strategy can be found [here](http://www.passportjs.org/packages/passport-jwt/).
+
 ---
 
 ## Installation
