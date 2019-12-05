@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/sdanyalk/auth-project-two.svg?branch=master)](https://travis-ci.com/sdanyalk/auth-project-two)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](license)
 
 # Authentication for Project Two
 This project showcases how to add authentication using `passport.js` library. Template for this project is the starter template given for Project Two.
