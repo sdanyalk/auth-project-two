@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Released](https://github.com/sdanyalk/auth-project-two/releases)
 
-## [2.0.0]() - 2019-12-04
+## [2.0.0](https://github.com/sdanyalk/auth-project-two/releases/tag/v2.0.0) - 2019-12-04
 
 ### Added
 - Secured API routes using passport JWT strategy.
