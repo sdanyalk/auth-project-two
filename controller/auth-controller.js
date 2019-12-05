@@ -52,8 +52,6 @@ router.post(
       expires: Date.now() + parseInt(60000)
     };
 
-    console.log(payload);
-
     req.login(payload, { session: false }, function(error) {
       if (error) {
         res.status(400).send({ error });

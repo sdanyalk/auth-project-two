@@ -58,11 +58,6 @@ module.exports = function(passport) {
         session: false
       },
       function(email, password, cb) {
-        console.log("Inside passport");
-        console.log(email);
-        console.log(password);
-        console.log(cb);
-
         db.user.findOne({ where: { email: email } }).then(function(data) {
           if (!data) {
             return cb(null, false, { message: "No email found." });
@@ -76,8 +71,6 @@ module.exports = function(passport) {
             userId: data.id
           };
           db.history.create(record).then(function() {
-            console.log(cb);
-
             return cb(null, data);
           });
         });
@@ -87,8 +80,6 @@ module.exports = function(passport) {
 
   const opts = {
     jwtFromRequest: function(req) {
-      console.log(req.cookies);
-
       return req.cookies.jwt;
     },
     secretOrKey: jwtSecret.secret
@@ -97,8 +88,6 @@ module.exports = function(passport) {
   passport.use(
     "jwt",
     new JwtStrategy(opts, function(jwtpayload, cb) {
-      console.log(jwtpayload);
-
       db.user.findOne({ id: jwtpayload.sub }).then(function(data) {
         if (data) {
           return cb(null, data);
