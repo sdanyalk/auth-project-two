@@ -1,4 +1,6 @@
 const LocalStrategy = require("passport-local").Strategy;
+const JwtStrategy = require("passport-jwt").Strategy;
+const jwtSecret = require("./jwt-config");
 const db = require("../models");
 
 module.exports = function(passport) {
@@ -17,7 +19,8 @@ module.exports = function(passport) {
     new LocalStrategy(
       {
         usernameField: "email",
-        passwordField: "password"
+        passwordField: "password",
+        session: true
       },
       function(email, password, cb) {
         db.user.findOne({ where: { email: email } }).then(function(data) {
@@ -32,7 +35,13 @@ module.exports = function(passport) {
                 password: db.user.generateHash(password)
               })
               .then(function(data) {
-                return cb(null, data);
+                const record = {
+                  status: "SignUp",
+                  userId: data.dataValues.id
+                };
+                db.history.create(record).then(function() {
+                  return cb(null, data);
+                });
               });
           }
         });
@@ -45,7 +54,8 @@ module.exports = function(passport) {
     new LocalStrategy(
       {
         usernameField: "email",
-        passwordField: "password"
+        passwordField: "password",
+        session: false
       },
       function(email, password, cb) {
         db.user.findOne({ where: { email: email } }).then(function(data) {
@@ -55,9 +65,36 @@ module.exports = function(passport) {
           if (!db.user.validPassword(password, data.password)) {
             return cb(null, false, { message: "Oops! Wrong password!" });
           }
-          return cb(null, data);
+
+          const record = {
+            status: "LogIn",
+            userId: data.id
+          };
+          db.history.create(record).then(function() {
+            return cb(null, data);
+          });
         });
       }
     )
+  );
+
+  const opts = {
+    jwtFromRequest: function(req) {
+      return req.cookies.jwt;
+    },
+    secretOrKey: jwtSecret.secret
+  };
+
+  passport.use(
+    "jwt",
+    new JwtStrategy(opts, function(jwtpayload, cb) {
+      db.user.findOne({ id: jwtpayload.sub }).then(function(data) {
+        if (data) {
+          return cb(null, data);
+        } else {
+          return cb(null, false, { message: "No user found." });
+        }
+      });
+    })
   );
 };

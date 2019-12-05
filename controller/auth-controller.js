@@ -2,13 +2,19 @@ const passport = require("passport");
 const express = require("express");
 const flash = require("connect-flash");
 const session = require("express-session");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const router = express.Router();
+const db = require("../models");
+const jwtSecret = require("../config/jwt-config");
 
 // Flash
 router.use(
   session({
     cookie: { maxAge: 60000 },
-    secret: "wootwoot"
+    secret: "wootwoot",
+    saveUninitialized: true,
+    resave: true
   })
 );
 router.use(flash());
@@ -17,6 +23,8 @@ router.use(flash());
 require("../config/passport")(passport);
 router.use(passport.initialize());
 router.use(passport.session());
+
+router.use(cookieParser());
 
 router.get("/", function(req, res) {
   if (req.user) {
@@ -35,10 +43,26 @@ router.get("/login", function(req, res) {
 router.post(
   "/login",
   passport.authenticate("local-login", {
-    successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true
-  })
+  }),
+  function(req, res) {
+    const payload = {
+      email: req.user.email,
+      expires: Date.now() + parseInt(60000)
+    };
+
+    req.login(payload, { session: false }, function(error) {
+      if (error) {
+        res.status(400).send({ error });
+      }
+
+      const token = jwt.sign(JSON.stringify(payload), jwtSecret.secret);
+
+      res.cookie("jwt", token, { httpOnly: true, secure: false });
+      res.redirect("/");
+    });
+  }
 );
 
 router.get("/signup", function(req, res) {
@@ -55,12 +79,19 @@ router.post(
 );
 
 router.get("/logout", function(req, res) {
-  req.logout();
-  res.redirect("/");
+  const record = {
+    status: "LogOut",
+    userId: req.user.dataValues.id
+  };
+  db.history.create(record).then(function() {
+    req.logout();
+    res.clearCookie("jwt");
+    res.redirect("/");
+  });
 });
 
-router.get("*", function(req, res) {
-  res.render("404");
-});
+// router.get("*", function(req, res) {
+//   res.render("404");
+// });
 
 module.exports = router;
