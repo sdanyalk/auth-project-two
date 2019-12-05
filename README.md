@@ -1,4 +1,4 @@
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](changelog)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](CHANGELOG.md)
 [![Build Status](https://travis-ci.com/sdanyalk/auth-project-two.svg?branch=master)](https://travis-ci.com/sdanyalk/auth-project-two)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](license)
 
