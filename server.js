@@ -24,7 +24,7 @@ app.use(authRoutes);
 app.use(userRoutes);
 app.use(historyRoutes);
 
-const syncOptions = { force: true };
+const syncOptions = { force: false };
 
 // If running a test, set syncOptions.force to true
 // clearing the `testdb`
