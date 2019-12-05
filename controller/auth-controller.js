@@ -3,6 +3,7 @@ const express = require("express");
 const flash = require("connect-flash");
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const router = express.Router();
 const db = require("../models");
 const jwtSecret = require("../config/jwt-config");
@@ -11,7 +12,9 @@ const jwtSecret = require("../config/jwt-config");
 router.use(
   session({
     cookie: { maxAge: 60000 },
-    secret: "wootwoot"
+    secret: "wootwoot",
+    saveUninitialized: true,
+    resave: true
   })
 );
 router.use(flash());
@@ -20,6 +23,8 @@ router.use(flash());
 require("../config/passport")(passport);
 router.use(passport.initialize());
 router.use(passport.session());
+
+router.use(cookieParser());
 
 router.get("/", function(req, res) {
   if (req.user) {
@@ -56,7 +61,7 @@ router.post(
 
       const token = jwt.sign(JSON.stringify(payload), jwtSecret.secret);
 
-      res.cookie("jwt", token, { httpOnly: true, secure: true });
+      res.cookie("jwt", token, { httpOnly: true, secure: false });
       res.redirect("/");
     });
   }
@@ -82,6 +87,7 @@ router.get("/logout", function(req, res) {
   };
   db.history.create(record).then(function() {
     req.logout();
+    res.clearCookie("jwt");
     res.redirect("/");
   });
 });

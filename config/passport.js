@@ -87,6 +87,8 @@ module.exports = function(passport) {
 
   const opts = {
     jwtFromRequest: function(req) {
+      console.log(req.cookies);
+
       return req.cookies.jwt;
     },
     secretOrKey: jwtSecret.secret
