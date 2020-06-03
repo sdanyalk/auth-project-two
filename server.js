@@ -1,11 +1,13 @@
 require("dotenv").config();
 const express = require("express");
+const Handlebars = require("handlebars");
 const exphbs = require("express-handlebars");
+const { allowInsecurePrototypeAccess } = require("@handlebars/allow-prototype-access");
 
 const db = require("./models");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(express.urlencoded({ extended: false }));
@@ -13,7 +15,13 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Handlebars
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.engine(
+  "handlebars",
+  exphbs({
+    defaultLayout: "main",
+    handlebars: allowInsecurePrototypeAccess(Handlebars)
+  })
+);
 app.set("view engine", "handlebars");
 
 // Routes
