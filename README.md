@@ -81,6 +81,7 @@ This project is deployed on Heroku. The link to web app is:
 
 - [x] Secure the API endpoints by using JWT strategy in passport js.
 - [ ] Add Jest unit tests.
+
 ---
 
 ## Troubleshooting
@@ -88,6 +89,12 @@ This project is deployed on Heroku. The link to web app is:
 | Issue | Resolution
 | ----------- | ----------- |
 | `bcrypt` node package failing to install on Windows 7/10 machines. | From the `bcrypt` documentation, there are extra installations required on Windows OS to make `bcrypt` work. This is listed under the [Dependencies](https://www.npmjs.com/package/bcrypt#dependencies) section. To complete the required Windows dependencies install the tools as mentioned [here](https://github.com/kelektiv/node.bcrypt.js/wiki/Installation-Instructions#microsoft-windows). Complete the previous step in GitBash (run as administrator).|
+
+---
+
+## Issues/Bugs
+
+Please report any bugs [here](https://github.com/sdanyalk/auth-project-two/issues).
 
 ---
 
