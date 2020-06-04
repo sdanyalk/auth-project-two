@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "user",
     {
@@ -19,15 +19,15 @@ module.exports = function(sequelize, DataTypes) {
     }
   );
 
-  User.generateHash = function(password) {
+  User.generateHash = password => {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
   };
 
-  User.validPassword = function(inputPwd, dbPwd) {
+  User.validPassword = (inputPwd, dbPwd) => {
     return bcrypt.compareSync(inputPwd, dbPwd);
   };
 
-  User.associate = function(models) {
+  User.associate = models => {
     User.hasMany(models.history, {
       onDelete: "cascade"
     });

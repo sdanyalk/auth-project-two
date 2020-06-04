@@ -29,7 +29,7 @@ Passport Local strategy expects you to have username and password stored in your
     ```
 1. Create mysql database using the `schema.sql` file, located below.
     ```
-    /models/schema.sql
+    /db/schema.sql
     ```
 1. Update database username and password configuration in `config.json` file, located below.
     ```
@@ -41,7 +41,7 @@ Passport Local strategy expects you to have username and password stored in your
     ```
 1. In your browser navigate to the following page.
     ```
-    http://localhost:3000
+    http://localhost:8080
     ```
 ---
 

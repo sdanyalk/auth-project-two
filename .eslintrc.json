@@ -2,31 +2,26 @@
     "env": {
         "browser": true,
         "commonjs": true,
-        "node": true,
-        "es6": true
+        "es6": true,
+        "node": true
     },
-    "extends": "prettier",
-    "plugins": [
-        "prettier"
-      ],
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
     "rules": {
-        "no-console": "error",
-        "no-duplicate-case":"error",
-        "no-empty":"error",
-        "no-extra-semi":"error",
-        "no-func-assign": "error",
-        "no-irregular-whitespace":"error",
-        "no-unreachable": "error",
-        "curly": "error",
-        "dot-notation": "error",
-        "eqeqeq": "error",
-        "no-empty-function": "error",
-        "no-multi-spaces": "error",
-        "no-unused-vars": "error",
-        "camelcase": "error",
-        "indent": [
+        "no-console": [
             "error",
-            2
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
         ],
         "quotes": [
             "error",
@@ -35,7 +30,6 @@
         "semi": [
             "error",
             "always"
-        ],
-        "prettier/prettier": "error"
+        ]
     }
 }

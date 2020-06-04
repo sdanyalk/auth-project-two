@@ -26,17 +26,15 @@ router.use(passport.session());
 
 router.use(cookieParser());
 
-router.get("/", function(req, res) {
+router.get("/", (req, res) => {
   if (req.user) {
-    res.render("index", {
-      user: req.user
-    });
+    res.render("index", { user: req.user });
   } else {
     res.redirect("/login");
   }
 });
 
-router.get("/login", function(req, res) {
+router.get("/login", (req, res) => {
   res.render("login", { message: req.flash("error") });
 });
 
@@ -46,13 +44,13 @@ router.post(
     failureRedirect: "/login",
     failureFlash: true
   }),
-  function(req, res) {
+  (req, res) => {
     const payload = {
       email: req.user.email,
       expires: Date.now() + parseInt(60000)
     };
 
-    req.login(payload, { session: false }, function(error) {
+    req.login(payload, { session: false }, error => {
       if (error) {
         res.status(400).send({ error });
       }
@@ -65,7 +63,7 @@ router.post(
   }
 );
 
-router.get("/signup", function(req, res) {
+router.get("/signup", (req, res) => {
   res.render("signup", { message: req.flash("error") });
 });
 
@@ -78,20 +76,17 @@ router.post(
   })
 );
 
-router.get("/logout", function(req, res) {
+router.get("/logout", async (req, res) => {
   const record = {
     status: "LogOut",
     userId: req.user.dataValues.id
   };
-  db.history.create(record).then(function() {
-    req.logout();
-    res.clearCookie("jwt");
-    res.redirect("/");
-  });
-});
 
-// router.get("*", function(req, res) {
-//   res.render("404");
-// });
+  await db.history.create(record);
+
+  req.logout();
+  res.clearCookie("jwt");
+  res.redirect("/");
+});
 
 module.exports = router;

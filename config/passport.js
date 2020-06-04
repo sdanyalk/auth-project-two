@@ -3,15 +3,15 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const jwtSecret = require("./jwt-config");
 const db = require("../models");
 
-module.exports = function(passport) {
-  passport.serializeUser(function(user, cb) {
+module.exports = passport => {
+  passport.serializeUser((user, cb) => {
     cb(null, user.id);
   });
 
-  passport.deserializeUser(function(id, cb) {
-    db.user.findOne({ where: { id: id } }).then(function(data) {
-      cb(null, data);
-    });
+  passport.deserializeUser(async (id, cb) => {
+    const data = await db.user.findOne({ where: { id: id } });
+
+    cb(null, data);
   });
 
   passport.use(
@@ -22,29 +22,28 @@ module.exports = function(passport) {
         passwordField: "password",
         session: true
       },
-      function(email, password, cb) {
-        db.user.findOne({ where: { email: email } }).then(function(data) {
-          if (data) {
-            return cb(null, false, {
-              message: "Oops! Email already signed-up."
-            });
-          } else {
-            db.user
-              .create({
-                email: email,
-                password: db.user.generateHash(password)
-              })
-              .then(function(data) {
-                const record = {
-                  status: "SignUp",
-                  userId: data.dataValues.id
-                };
-                db.history.create(record).then(function() {
-                  return cb(null, data);
-                });
-              });
-          }
-        });
+      async (email, password, cb) => {
+        let data = await db.user.findOne({ where: { email: email } });
+
+        if (data) {
+          return cb(null, false, {
+            message: "Oops! Email already signed-up."
+          });
+        } else {
+          data = await db.user.create({
+            email: email,
+            password: db.user.generateHash(password)
+          });
+
+          const record = {
+            status: "SignUp",
+            userId: data.dataValues.id
+          };
+
+          data = await db.history.create(record);
+
+          return cb(null, data);
+        }
       }
     )
   );
@@ -57,29 +56,30 @@ module.exports = function(passport) {
         passwordField: "password",
         session: false
       },
-      function(email, password, cb) {
-        db.user.findOne({ where: { email: email } }).then(function(data) {
-          if (!data) {
-            return cb(null, false, { message: "No email found." });
-          }
-          if (!db.user.validPassword(password, data.password)) {
-            return cb(null, false, { message: "Oops! Wrong password!" });
-          }
+      async (email, password, cb) => {
+        let data = await db.user.findOne({ where: { email: email } });
 
-          const record = {
-            status: "LogIn",
-            userId: data.id
-          };
-          db.history.create(record).then(function() {
-            return cb(null, data);
-          });
-        });
+        if (!data) {
+          return cb(null, false, { message: "No email found." });
+        }
+        if (!db.user.validPassword(password, data.password)) {
+          return cb(null, false, { message: "Oops! Wrong password!" });
+        }
+
+        const record = {
+          status: "LogIn",
+          userId: data.id
+        };
+
+        await db.history.create(record);
+
+        return cb(null, data);
       }
     )
   );
 
   const opts = {
-    jwtFromRequest: function(req) {
+    jwtFromRequest: req => {
       return req.cookies.jwt;
     },
     secretOrKey: jwtSecret.secret
@@ -87,14 +87,14 @@ module.exports = function(passport) {
 
   passport.use(
     "jwt",
-    new JwtStrategy(opts, function(jwtpayload, cb) {
-      db.user.findOne({ id: jwtpayload.sub }).then(function(data) {
-        if (data) {
-          return cb(null, data);
-        } else {
-          return cb(null, false, { message: "No user found." });
-        }
-      });
+    new JwtStrategy(opts, async (jwtpayload, cb) => {
+      const data = await db.user.findOne({ id: jwtpayload.sub });
+
+      if (data) {
+        return cb(null, data);
+      } else {
+        return cb(null, false, { message: "No user found." });
+      }
     })
   );
 };
