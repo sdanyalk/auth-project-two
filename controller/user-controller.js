@@ -8,53 +8,73 @@ require("../config/passport")(passport);
 router.use(passport.initialize());
 router.use(passport.session());
 
-router.get("/users", function(req, res) {
-  if (req.user) {
-    db.user.findAll({}).then(function(data) {
-      res.render("user", {
-        users: data
-      });
-    });
-  } else {
-    res.redirect("/login");
+router.get("/users", async (req, res) => {
+  try {
+    if (req.user) {
+      const data = await db.user.findAll();
+
+      res.render("user", { users: data });
+    } else {
+      res.redirect("/login");
+    }
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).send();
   }
 });
 
 router.get(
   "/api/users",
   passport.authenticate("jwt", { session: false }),
-  function(req, res) {
-    db.user.findAll({ include: [db.history] }).then(function(data) {
+  async (req, res) => {
+    try {
+      const data = await db.user.findAll({ include: [db.history] });
+
       res.json(data);
-    });
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).send();
+    }
   }
 );
 
-router.get("/api/users/:id", function(req, res) {
-  db.user
-    .findAll({ where: { id: req.params.id }, include: [db.history] })
-    .then(function(data) {
-      res.json(data);
-    });
+router.get("/api/users/:id", async (req, res) => {
+  try {
+    const data = await db.user.findAll({ where: { id: req.params.id }, include: [db.history] });
+
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).send();
+  }
 });
 
 router.post(
   "/api/users",
   passport.authenticate("jwt", { session: false }),
-  function(req, res) {
-    db.user.create(req.body).then(function(data) {
-      res.json(data);
-    });
+  async (req, res) => {
+    const data = await db.user.create(req.body);
+
+    res.json(data);
   }
 );
 
 router.delete(
   "/api/users/:id",
   passport.authenticate("jwt", { session: false }),
-  function(req, res) {
-    db.user.destroy({ where: { id: req.params.id } }).then(function(data) {
+  async (req, res) => {
+    try {
+      const data = await db.user.destroy({ where: { id: req.params.id } });
+
       res.json(data);
-    });
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).send();
+    }
   }
 );
 

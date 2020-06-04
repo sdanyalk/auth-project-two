@@ -1,4 +1,4 @@
-module.exports = function(sequelize, DataTypes) {
+module.exports = (sequelize, DataTypes) => {
   const History = sequelize.define(
     "history",
     {
@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   );
 
-  History.associate = function(models) {
+  History.associate = (models) => {
     History.belongsTo(models.user, {
       foreignKey: {
         allowNull: false
