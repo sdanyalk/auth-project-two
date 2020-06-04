@@ -13,6 +13,14 @@ Passport Local strategy expects you to have username and password stored in your
 
 ---
 
+## Usage
+
+You are most welcome to use this project as a starter code for your project-2. You have my full permission, and blessing.
+
+To show this, I've published this project as a github *template* project. On the top, just before `Clone or download` button you will see a green `Use this template` button. This will allow you to create your own project based off this starter code project. So instead of cloning or forking, that is what I will recommend doing.
+
+---
+
 ## Installation
 
 1. Clone this repository.
