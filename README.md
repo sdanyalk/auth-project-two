@@ -79,7 +79,8 @@ This project is deployed on Heroku. The link to web app is:
 
 ## Nice to have
 
-- Secure the API endpoints by using JWT strategy in passport js.
+- [x] Secure the API endpoints by using JWT strategy in passport js.
+- [ ] Add Jest unit tests.
 ---
 
 ## Troubleshooting
